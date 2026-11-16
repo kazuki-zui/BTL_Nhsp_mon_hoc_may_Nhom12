@@ -1,0 +1,252 @@
+{
+  "primary_model": "Random Forest (Mở rộng)",
+  "outcome_stats": {
+    "TP": {
+      "count": 68,
+      "amount_sum": 8892.11,
+      "amount_mean": 130.77,
+      "amount_median": 34.3,
+      "feature_medians": {
+        "Amount": 34.295,
+        "Hour": 11.0,
+        "V17": -5.7051,
+        "V14": -7.3875,
+        "V12": -6.1574,
+        "V10": -5.3122,
+        "V4": 4.9965,
+        "V11": 4.2248
+      }
+    },
+    "FN": {
+      "count": 27,
+      "amount_sum": 5874.2,
+      "amount_mean": 217.56,
+      "amount_median": 3.76,
+      "feature_medians": {
+        "Amount": 3.76,
+        "Hour": 14.0,
+        "V17": 0.7058,
+        "V14": -1.0437,
+        "V12": -0.4912,
+        "V10": -0.3699,
+        "V4": 2.6757,
+        "V11": 1.033
+      }
+    },
+    "FP": {
+      "count": 3,
+      "amount_sum": 200.89,
+      "amount_mean": 66.96,
+      "amount_median": 89.99,
+      "feature_medians": {
+        "Amount": 89.99,
+        "Hour": 11.0,
+        "V17": -12.1293,
+        "V14": -8.2474,
+        "V12": -7.1045,
+        "V10": -6.3841,
+        "V4": 4.2144,
+        "V11": 3.2909
+      }
+    },
+    "TN": {
+      "count": 56648,
+      "amount_sum": 5024925.0,
+      "amount_mean": 88.7,
+      "amount_median": 21.6,
+      "feature_medians": {
+        "Amount": 21.6,
+        "Hour": 14.0,
+        "V17": -0.0663,
+        "V14": 0.0572,
+        "V12": 0.1446,
+        "V10": -0.0905,
+        "V4": -0.0254,
+        "V11": -0.0369
+      }
+    }
+  },
+  "top_fn_high_amount": [
+    {
+      "Time": 9064.0,
+      "Hour": 2.0,
+      "Amount": 1809.68,
+      "V17": -5.1361,
+      "V14": -3.738,
+      "V12": -6.998,
+      "V10": -1.9878,
+      "y_prob": 0.3831
+    },
+    {
+      "Time": 154309.0,
+      "Hour": 18.0,
+      "Amount": 1096.99,
+      "V17": -0.0524,
+      "V14": 0.985,
+      "V12": 0.9797,
+      "V10": -1.1345,
+      "y_prob": 0.0071
+    },
+    {
+      "Time": 131024.0,
+      "Hour": 12.0,
+      "Amount": 723.21,
+      "V17": 1.1657,
+      "V14": -2.3066,
+      "V12": -0.0544,
+      "V10": 0.0857,
+      "y_prob": 0.0579
+    },
+    {
+      "Time": 67571.0,
+      "Hour": 18.0,
+      "Amount": 549.06,
+      "V17": 0.2433,
+      "V14": 0.2175,
+      "V12": -0.0054,
+      "V10": -1.7691,
+      "y_prob": 0.0
+    },
+    {
+      "Time": 52814.0,
+      "Hour": 14.0,
+      "Amount": 519.9,
+      "V17": -0.1192,
+      "V14": 0.5789,
+      "V12": -0.796,
+      "V10": -0.1501,
+      "y_prob": 0.0
+    }
+  ],
+  "top_fp_high_confidence": [
+    {
+      "Time": 75706.0,
+      "Hour": 21.0,
+      "Amount": 109.9,
+      "V17": -12.1293,
+      "V14": -7.1096,
+      "V12": -7.1045,
+      "V10": -5.622,
+      "y_prob": 0.9829
+    },
+    {
+      "Time": 41444.0,
+      "Hour": 11.0,
+      "Amount": 1.0,
+      "V17": -7.7819,
+      "V14": -8.2474,
+      "V12": -6.9627,
+      "V10": -6.3841,
+      "y_prob": 0.808
+    },
+    {
+      "Time": 17789.0,
+      "Hour": 4.0,
+      "Amount": 89.99,
+      "V17": -16.8253,
+      "V14": -13.6241,
+      "V12": -15.1179,
+      "V10": -11.1529,
+      "y_prob": 0.5912
+    }
+  ],
+  "fraud_detection_by_model": {
+    "K-NN (Tuned)": {
+      "caught_tp": 64,
+      "missed_fn": 31
+    },
+    "Gaussian Naive Bayes": {
+      "caught_tp": 78,
+      "missed_fn": 17
+    },
+    "Decision Tree (Tuned)": {
+      "caught_tp": 61,
+      "missed_fn": 34
+    },
+    "Random Forest (Mở rộng)": {
+      "caught_tp": 68,
+      "missed_fn": 27
+    },
+    "HistGradientBoosting (Mở rộng)": {
+      "caught_tp": 68,
+      "missed_fn": 27
+    }
+  },
+  "hard_fraud_cases_count": 26,
+  "sample_hard_fraud_cases": [
+    {
+      "test_row_pos": 51417,
+      "Amount": 1809.68,
+      "Hour": 2.0,
+      "V17": -5.1361,
+      "V14": -3.738,
+      "V12": -6.998,
+      "missed_by": [
+        "K-NN (Tuned)",
+        "Decision Tree (Tuned)",
+        "Random Forest (Mở rộng)",
+        "HistGradientBoosting (Mở rộng)"
+      ]
+    },
+    {
+      "test_row_pos": 4480,
+      "Amount": 1096.99,
+      "Hour": 18.0,
+      "V17": -0.0524,
+      "V14": 0.985,
+      "V12": 0.9797,
+      "missed_by": [
+        "K-NN (Tuned)",
+        "Gaussian Naive Bayes",
+        "Decision Tree (Tuned)",
+        "Random Forest (Mở rộng)",
+        "HistGradientBoosting (Mở rộng)"
+      ]
+    },
+    {
+      "test_row_pos": 44579,
+      "Amount": 723.21,
+      "Hour": 12.0,
+      "V17": 1.1657,
+      "V14": -2.3066,
+      "V12": -0.0544,
+      "missed_by": [
+        "K-NN (Tuned)",
+        "Gaussian Naive Bayes",
+        "Decision Tree (Tuned)",
+        "Random Forest (Mở rộng)",
+        "HistGradientBoosting (Mở rộng)"
+      ]
+    },
+    {
+      "test_row_pos": 47606,
+      "Amount": 549.06,
+      "Hour": 18.0,
+      "V17": 0.2433,
+      "V14": 0.2175,
+      "V12": -0.0054,
+      "missed_by": [
+        "K-NN (Tuned)",
+        "Gaussian Naive Bayes",
+        "Decision Tree (Tuned)",
+        "Random Forest (Mở rộng)",
+        "HistGradientBoosting (Mở rộng)"
+      ]
+    },
+    {
+      "test_row_pos": 54283,
+      "Amount": 519.9,
+      "Hour": 14.0,
+      "V17": -0.1192,
+      "V14": 0.5789,
+      "V12": -0.796,
+      "missed_by": [
+        "K-NN (Tuned)",
+        "Gaussian Naive Bayes",
+        "Decision Tree (Tuned)",
+        "Random Forest (Mở rộng)",
+        "HistGradientBoosting (Mở rộng)"
+      ]
+    }
+  ]
+}

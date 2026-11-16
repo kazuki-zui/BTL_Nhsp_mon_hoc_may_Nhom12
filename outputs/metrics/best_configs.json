@@ -1,0 +1,31 @@
+{
+  "random_state": 42,
+  "flow_a_meta": {
+    "deduplicated": false,
+    "n_rows_used": 284807,
+    "split_strategy": "stratified",
+    "scaler": "StandardScaler"
+  },
+  "flow_b_meta": {
+    "deduplicated": true,
+    "duplicates_removed": 1081,
+    "n_rows_used": 283726,
+    "split_strategy": "stratified",
+    "scaler": "robust"
+  },
+  "best_knn": {
+    "n_neighbors": 3,
+    "weights": "distance",
+    "metric": "euclidean"
+  },
+  "best_decision_tree": {
+    "criterion": "entropy",
+    "max_depth": 6,
+    "min_samples_leaf": 5,
+    "class_weight": null
+  },
+  "best_naive_bayes": {
+    "var_smoothing": 0.1,
+    "scaler": "robust"
+  }
+}

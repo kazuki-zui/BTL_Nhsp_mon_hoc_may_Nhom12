@@ -1,0 +1,2234 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FraudGuard Dashboard · Quản trị Rủi ro Thẻ tín dụng (Nhóm 12)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* Clean Modern Dashboard Theme (Matching Reference Image) */
+      --bg-canvas: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-card-subtle: #f8fafc;
+      --bg-input: #f8fafc;
+      
+      --border-card: #e2e8f0;
+      --border-subtle: #edf2f7;
+      --border-focus: #0284c7;
+      
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+      
+      /* Sidebar Dark Style (Matching User Screenshot 1) */
+      --sidebar-bg: #0d1527;
+      --sidebar-card: #131f38;
+      --sidebar-card-active: #1e3a8a;
+      --sidebar-border: rgba(255, 255, 255, 0.08);
+      --sidebar-text: #f8fafc;
+      --sidebar-muted: #94a3b8;
+      --sidebar-dim: #64748b;
+      
+      /* Vibrant Chart Palette (Matching User Screenshot 2) */
+      --c-blue: #0284c7;
+      --c-blue-light: #38bdf8;
+      --c-teal: #0d9488;
+      --c-teal-light: #2dd4bf;
+      --c-emerald: #10b981;
+      --c-emerald-light: #34d399;
+      --c-emerald-soft: #ecfdf5;
+      --c-amber: #f59e0b;
+      --c-amber-light: #fbbf24;
+      --c-amber-soft: #fffbeb;
+      --c-rose: #ef4444;
+      --c-rose-light: #f87171;
+      --c-rose-soft: #fef2f2;
+      --c-purple: #8b5cf6;
+      --c-purple-light: #a78bfa;
+      
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -1px rgba(0, 0, 0, 0.02), 0 0 0 1px var(--border-card);
+      --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg-canvas);
+      color: var(--text-main);
+      font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+      font-size: 13.5px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .mono {
+      font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+      font-feature-settings: "tnum";
+    }
+
+    /* ==========================================================================
+       SIDEBAR NAVIGATION (DARK THEME - MATCHING SCREENSHOT 1)
+       ========================================================================== */
+    aside.dashboard-sidebar {
+      width: 290px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--sidebar-border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      min-height: 100vh;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      color: var(--sidebar-text);
+    }
+
+    .sidebar-brand {
+      padding: 22px 20px;
+      border-bottom: 1px solid var(--sidebar-border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo-badge {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      flex-shrink: 0;
+      padding: 3px;
+      overflow: hidden;
+    }
+
+    .brand-text h1 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+    }
+
+    .brand-text p {
+      margin: 3px 0 0;
+      font-size: 11px;
+      color: var(--sidebar-muted);
+      line-height: 1.3;
+    }
+
+    .sidebar-scroll-area {
+      padding: 16px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .nav-category {
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--sidebar-dim);
+      padding: 12px 8px 6px;
+    }
+
+    /* Model Selection Cards in Sidebar (User Request: "Cho hết phần thuật toán sang đây") */
+    .model-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .model-nav-btn {
+      display: flex;
+      flex-direction: column;
+      padding: 9px 12px;
+      border-radius: var(--radius-md);
+      background: var(--sidebar-card);
+      border: 1px solid var(--sidebar-border);
+      color: var(--sidebar-muted);
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.16s ease;
+      position: relative;
+      outline: none;
+    }
+
+    .model-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.07);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .model-nav-btn.active {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.25) 0%, rgba(3, 105, 161, 0.35) 100%);
+      border-color: #38bdf8;
+      color: #ffffff;
+      box-shadow: 0 0 16px rgba(2, 132, 199, 0.25);
+    }
+
+    .model-nav-btn.active::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 8px;
+      bottom: 8px;
+      width: 3.5px;
+      background: #38bdf8;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .model-btn-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .model-btn-sub {
+      font-size: 10.5px;
+      color: var(--sidebar-dim);
+      margin-top: 2px;
+    }
+
+    .model-nav-btn.active .model-btn-sub {
+      color: #bae6fd;
+    }
+
+    /* Filter Shortcuts in Sidebar */
+    .filter-nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--sidebar-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      width: 100%;
+      text-align: left;
+      transition: all 0.12s ease;
+    }
+
+    .filter-nav-btn:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #ffffff;
+    }
+
+    .filter-nav-btn.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    .sidebar-footer {
+      padding: 16px 18px;
+      border-top: 1px solid var(--sidebar-border);
+      background: rgba(0, 0, 0, 0.2);
+      font-size: 11px;
+      color: var(--sidebar-dim);
+    }
+
+    /* ==========================================================================
+       MAIN DASHBOARD AREA (LIGHT MODERN THEME - MATCHING SCREENSHOT 2)
+       ========================================================================== */
+    main.dashboard-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      min-height: 100vh;
+    }
+
+    header.dashboard-topbar {
+      height: 64px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border-card);
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .topbar-title {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+
+    .active-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      font-size: 11px;
+      font-weight: 700;
+      color: #166534;
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .dashboard-content {
+      padding: 24px 32px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 1540px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* KPI Top Stat Row */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .kpi-header {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .kpi-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    .kpi-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    /* Split Main Grid */
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 52fr 48fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+    }
+
+    .card-title-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .card-title-bar h2 {
+      margin: 0;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Feed Table */
+    .table-container {
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      overflow-x: auto;
+      max-height: 200px;
+      margin-bottom: 16px;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 12px;
+    }
+
+    table.data-table th {
+      background: var(--bg-card-subtle);
+      padding: 9px 12px;
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border-card);
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    table.data-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    table.data-table tr:hover td {
+      background: #f0f9ff;
+      color: var(--text-main);
+    }
+
+    table.data-table tr.selected td {
+      background: #e0f2fe;
+      color: #0369a1;
+      font-weight: 700;
+      border-color: #bae6fd;
+    }
+
+    /* Form Controls */
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .form-group label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .form-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-sm);
+      color: var(--text-main);
+      padding: 8px 11px;
+      font-size: 12.5px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    .form-input:focus {
+      border-color: var(--border-focus);
+      background: #ffffff;
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
+
+    .pca-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    details.extra-pca-drawer {
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      background: var(--bg-card-subtle);
+      padding: 8px 12px;
+      margin-bottom: 16px;
+    }
+
+    details.extra-pca-drawer summary {
+      cursor: pointer;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--c-blue);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .drawer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border-card);
+    }
+
+    .action-bar {
+      display: flex;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .btn-primary {
+      flex: 1;
+      padding: 11px 18px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: #ffffff;
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+      transition: all 0.15s ease;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.5);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      padding: 11px 16px;
+      border-radius: var(--radius-sm);
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-subtle);
+      color: var(--text-main);
+    }
+
+    /* ==========================================================================
+       CHART SECTION (MATCHING REFERENCE IMAGE 2)
+       ========================================================================== */
+    
+    /* 1. Quad Donut Rings Row (Matching Bottom Center of Image 2) */
+    .donut-rings-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .donut-card {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .donut-svg-wrap {
+      width: 72px;
+      height: 72px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .donut-svg {
+      width: 72px;
+      height: 72px;
+      transform: rotate(-90deg);
+    }
+
+    .donut-circle-bg {
+      fill: none;
+      stroke: #e2e8f0;
+      stroke-width: 7;
+    }
+
+    .donut-circle-fill {
+      fill: none;
+      stroke-width: 7;
+      stroke-linecap: round;
+      stroke-dasharray: 188.5; /* 2 * PI * 30 = 188.5 */
+      stroke-dashoffset: 188.5;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), stroke 0.3s ease;
+    }
+
+    .donut-center-text {
+      position: absolute;
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .donut-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-top: 8px;
+    }
+
+    /* 2. Verdict Decision Banner */
+    .verdict-banner {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-card);
+      padding: 16px 18px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      transition: all 0.25s ease;
+    }
+
+    .verdict-banner.safe {
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+
+    .verdict-banner.warn {
+      background: #fffbeb;
+      border-color: #fde68a;
+    }
+
+    .verdict-banner.fraud {
+      background: #fef2f2;
+      border-color: #fca5a5;
+    }
+
+    .verdict-badge-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.03em;
+    }
+
+    /* 3. Horizontal Multi-Color Bar Chart (Matching Middle of Image 2) */
+    .model-bars-card {
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      background: #ffffff;
+      padding: 16px 18px;
+      margin-bottom: 18px;
+    }
+
+    .model-bars-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .horizontal-chart-area {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .red-threshold-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #ef4444;
+      border-left: 1px dashed #ef4444;
+      z-index: 10;
+      pointer-events: none;
+      transition: left 0.2s ease;
+    }
+
+    .red-threshold-tag {
+      position: absolute;
+      top: -18px;
+      transform: translateX(-50%);
+      background: #ef4444;
+      color: #ffffff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+
+    .model-bar-row {
+      display: grid;
+      grid-template-columns: 140px 1fr 65px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .model-bar-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .model-bar-track {
+      height: 16px;
+      background: #f1f5f9;
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .model-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.25s ease;
+      min-width: 4px;
+    }
+
+    /* 3.5. XAI Feature Deviations Table (Top 5 đặc trưng lệch mạnh nhất) */
+    .xai-deviations-card {
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      background: #ffffff;
+      padding: 14px 18px;
+      margin-bottom: 18px;
+    }
+
+    .xai-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+
+    .xai-table-wrap {
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    table.xai-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+    }
+
+    table.xai-table th {
+      background: var(--bg-card-subtle);
+      padding: 7px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border-bottom: 1px solid var(--border-card);
+      text-align: left;
+    }
+
+    table.xai-table td {
+      padding: 7px 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+    }
+
+    table.xai-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    table.xai-table tr:hover td {
+      background: #f8fafc;
+    }
+
+    /* 4. Smooth Spline / Wave Area Chart (Matching Left & Bottom-Left of Image 2) */
+    .wave-chart-card {
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      background: #ffffff;
+      padding: 16px 18px;
+      margin-bottom: 18px;
+    }
+
+    .wave-svg-container {
+      width: 100%;
+      height: 90px;
+      margin-top: 8px;
+    }
+
+    .wave-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* 5. Policy Slider */
+    .policy-box {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-card);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+    }
+
+    .slider-range {
+      width: 100%;
+      height: 6px;
+      border-radius: 999px;
+      background: #e2e8f0;
+      outline: none;
+      cursor: pointer;
+      -webkit-appearance: none;
+    }
+
+    .slider-range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--c-blue);
+      border: 2px solid #ffffff;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    }
+
+    .policy-chips {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .policy-chip {
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font-size: 10.5px;
+      font-weight: 600;
+      background: #ffffff;
+      border: 1px solid var(--border-card);
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .policy-chip:hover {
+      background: #f1f5f9;
+      color: var(--text-main);
+    }
+
+    /* Toast Notification */
+    .toast-tray {
+      position: fixed;
+      bottom: 24px;
+      right: 28px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast-msg {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: slideIn 0.2s ease-out;
+      transition: opacity 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Hidden element for backward compatibility with existing JS calls */
+    #modelSelect { display: none; }
+
+    @media (max-width: 1100px) {
+      .workspace-grid { grid-template-columns: 1fr; }
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      body { flex-direction: column; }
+      aside.dashboard-sidebar { width: 100%; min-height: auto; position: static; }
+      .kpi-row { grid-template-columns: 1fr; }
+    }
+
+    /* Modal / Popup Benchmark */
+    .benchmark-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+      visibility: hidden;
+    }
+
+    .benchmark-modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .benchmark-modal-card {
+      background: #ffffff;
+      border-radius: 16px;
+      max-width: 1120px;
+      width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border-card);
+      overflow: hidden;
+      transform: scale(0.96) translateY(10px);
+      transition: transform 0.25s ease;
+    }
+
+    .benchmark-modal-overlay.active .benchmark-modal-card {
+      transform: scale(1) translateY(0);
+    }
+
+    .benchmark-modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-card);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+    }
+
+    .benchmark-modal-body {
+      padding: 20px 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .highlight-hieu-banner {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+      border: 1.5px solid #bfdbfe;
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .highlight-hieu-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .hieu-stat-box {
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 10px 14px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .benchmark-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 12.5px;
+    }
+
+    .benchmark-table th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 2px solid #cbd5e1;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .benchmark-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #1e293b;
+    }
+
+    .benchmark-table tr.row-flow-a-dt {
+      background: #fef2f2;
+    }
+
+    .benchmark-table tr.row-flow-b-dt {
+      background: #f0fdf4;
+      font-weight: 600;
+      box-shadow: inset 3px 0 0 #10b981;
+    }
+
+    .benchmark-modal-footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border-card);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #f8fafc;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ======================================================================
+       SIDEBAR NAVIGATION (DARK THEME - MATCHING SCREENSHOT 1)
+       ====================================================================== -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo-badge" title="Đại học Đại Nam">
+        <img src="data:image/png;base64,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" alt="Logo Đại học Đại Nam" style="width:100%;height:100%;object-fit:contain;display:block;" />
+      </div>
+      <div class="brand-text">
+        <h1>FRAUDGUARD <span class="mono" style="font-size:10px;color:#38bdf8;">v2.0</span></h1>
+        <p>Hệ thống Quản trị Rủi ro Thẻ<br/><strong>Đại học Đại Nam · Nhóm 12</strong></p>
+      </div>
+    </div>
+
+    <div class="sidebar-scroll-area">
+      
+      <!-- BÀN TÁC NGHIỆP -->
+      <div class="nav-category">BÀN TÁC NGHIỆP</div>
+      <button type="button" class="filter-nav-btn active">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+        <span>Bảng điều khiển trực quan</span>
+      </button>
+      <button type="button" class="filter-nav-btn" onclick="openBenchmarkModal()" style="margin-top:6px;background:rgba(56, 189, 248, 0.12);color:#38bdf8;border:1px solid rgba(56, 189, 248, 0.35);font-weight:700;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+        <span>📊 Đối chứng Luồng A vs B</span>
+      </button>
+
+      <!-- USER REQUEST: "Cho hết phần thuật toán sang đây để chọn cho dễ" -->
+      <div class="nav-category" style="margin-top:10px;">CHỌN THUẬT TOÁN HỌC MÁY</div>
+      <div class="model-nav-list" id="sidebarModelList">
+        <button type="button" class="model-nav-btn active" id="btn_m_rf" onclick="selectModel('Random Forest (Mở rộng)')">
+          <div class="model-btn-top">
+            <span>🌲 Random Forest ⭐</span>
+            <span class="mono" style="font-size:10px;color:#38bdf8;">F1: 0.819</span>
+          </div>
+          <div class="model-btn-sub">Mô hình đề xuất · Luồng B</div>
+        </button>
+
+        <button type="button" class="model-nav-btn" id="btn_m_hgb" onclick="selectModel('HistGradientBoosting (Mở rộng)')">
+          <div class="model-btn-top">
+            <span>⚡ HistGradientBoosting</span>
+            <span class="mono" style="font-size:10px;">F1: 0.777</span>
+          </div>
+          <div class="model-btn-sub">Ensemble Boosting nhanh</div>
+        </button>
+
+        <button type="button" class="model-nav-btn" id="btn_m_knn" onclick="selectModel('K-NN (Tuned)')">
+          <div class="model-btn-top">
+            <span>📍 K-NN (Tuned)</span>
+            <span class="mono" style="font-size:10px;">F1: 0.800</span>
+          </div>
+          <div class="model-btn-sub">k=3, Trọng số khoảng cách</div>
+        </button>
+
+        <button type="button" class="model-nav-btn" id="btn_m_dt" onclick="selectModel('Decision Tree (Tuned)')">
+          <div class="model-btn-top">
+            <span>🌿 Decision Tree</span>
+            <span class="mono" style="font-size:10px;">F1: 0.758</span>
+          </div>
+          <div class="model-btn-sub">Độ sâu 6, Tiêu chí Entropy</div>
+        </button>
+
+        <button type="button" class="model-nav-btn" id="btn_m_nb" onclick="selectModel('Gaussian Naive Bayes')">
+          <div class="model-btn-top">
+            <span>📊 Gaussian Naive Bayes</span>
+            <span class="mono" style="font-size:10px;">F1: 0.125</span>
+          </div>
+          <div class="model-btn-sub">Yeo-Johnson PowerTransform</div>
+        </button>
+      </div>
+
+      <!-- LỌC NHANH MẪU KIỂM THỬ (From Screenshot 1) -->
+      <div class="nav-category" style="margin-top:10px;">LỌC NHANH MẪU KIỂM THỬ</div>
+      <button type="button" class="filter-nav-btn" onclick="filterSamples('tp')">
+        <span style="color:#f87171;">●</span>
+        <span>Gian lận rõ (True Positive)</span>
+      </button>
+      <button type="button" class="filter-nav-btn" onclick="filterSamples('fn')">
+        <span style="color:#fbbf24;">●</span>
+        <span>Gian lận ngụy trang (FN)</span>
+      </button>
+      <button type="button" class="filter-nav-btn" onclick="filterSamples('ok')">
+        <span style="color:#34d399;">●</span>
+        <span>Giao dịch hợp lệ (TN)</span>
+      </button>
+
+      <!-- THÔNG TIN HỌC PHẦN (From Screenshot 1) -->
+      <div class="nav-category" style="margin-top:10px;">THÔNG TIN HỌC PHẦN</div>
+      <div style="padding:4px 8px;font-size:11.5px;color:var(--sidebar-muted);line-height:1.6;">
+        <div><strong>Học phần:</strong> Nhập môn Học máy</div>
+        <div><strong>GVHD:</strong> ThS. Lê Thị Thùy Trang</div>
+        <div><strong>Đề tài:</strong> Phát hiện gian lận thẻ (12)</div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div><strong>Kiến trúc:</strong> Luồng B (Chống Leakage)</div>
+      <div style="display:inline-flex;align-items:center;gap:6px;margin-top:4px;color:#94a3b8;font-size:10.5px;">
+        <span style="width:7px;height:7px;border-radius:50%;background:#10b981;"></span>
+        <span>API Server: 127.0.0.1:8501</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ======================================================================
+       MAIN CONTENT (LIGHT MODERN FINTECH - MATCHING SCREENSHOT 2)
+       ====================================================================== -->
+  <main class="dashboard-main">
+    
+    <!-- Top Action Bar -->
+    <header class="dashboard-topbar">
+      <div class="topbar-left">
+        <span class="topbar-title">Bảng điều khiển Giám sát Giao dịch</span>
+        <span class="active-pill-badge mono">● TRỰC TUYẾN</span>
+      </div>
+      <div class="topbar-right" style="display:flex;align-items:center;gap:10px;">
+        <button type="button" onclick="openBenchmarkModal()" class="policy-chip" style="background:#0284c7;color:#ffffff;border-color:#0284c7;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;box-shadow:0 2px 4px rgba(2,132,199,0.25);">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+          <span>📊 Xem Bảng Đối Chứng Luồng A vs B</span>
+        </button>
+        <span id="activeModelTag" class="mono" style="font-size:12px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:4px 10px;border-radius:6px;">
+          Model: Random Forest (Mở rộng)
+        </span>
+      </div>
+    </header>
+
+    <div class="dashboard-content">
+
+      <!-- ==================================================================
+           ROW 1: KPI CARDS
+           ================================================================== -->
+      <section class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Tập Test Độc Lập</span>
+            <span class="mono" style="color:#0284c7;">56,746 Mẫu</span>
+          </div>
+          <div class="kpi-val mono">0.1727%</div>
+          <div class="kpi-sub">Tỉ lệ gian lận cực hiếm (578:1)</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Độ Chính Xác (Precision)</span>
+            <span style="color:#10b981;font-weight:700;">★ Tối đa</span>
+          </div>
+          <div class="kpi-val mono" style="color:#10b981;">95.77%</div>
+          <div class="kpi-sub">Chỉ có <strong>3 ca báo nhầm (FP)</strong></div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Độ Thu Hồi (Recall)</span>
+            <span style="color:#0284c7;font-weight:700;">★ Chặn bắt</span>
+          </div>
+          <div class="kpi-val mono" style="color:#0284c7;">71.58%</div>
+          <div class="kpi-sub">Ngăn chặn <strong>$8,892.11</strong> thiệt hại</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>F1-Score Tối Ưu</span>
+            <span class="mono" style="color:#8b5cf6;font-weight:700;">RF @ 0.55</span>
+          </div>
+          <div class="kpi-val mono" style="color:#8b5cf6;">0.8193</div>
+          <div class="kpi-sub">PR-AUC: <strong>0.8014</strong> · Vượt Luồng A</div>
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           ROW 2: WORKSPACE GRID
+           ================================================================== -->
+      <div class="workspace-grid">
+
+        <!-- LEFT COLUMN: TRANSACTION FEED & INPUTS -->
+        <section class="card">
+          <div class="card-title-bar">
+            <h2>
+              <span style="font-size:10px;font-weight:800;padding:2px 6px;border-radius:4px;background:#e0f2fe;color:#0284c7;">01</span>
+              <span>DÒNG GIAO DỊCH KIỂM THỬ (TEST SAMPLES)</span>
+            </h2>
+            <div id="groundTruthBadge"></div>
+          </div>
+
+          <!-- Feed Table -->
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Mã GD</th>
+                  <th>Thời gian</th>
+                  <th>Số tiền ($)</th>
+                  <th>Phân loại kịch bản</th>
+                  <th style="text-align:right;">Nhãn thực</th>
+                </tr>
+              </thead>
+              <tbody id="sampleTableBody"></tbody>
+            </table>
+          </div>
+
+          <!-- Parameters & Features -->
+          <div class="card-title-bar" style="margin-top:10px;">
+            <h2>
+              <span style="font-size:10px;font-weight:800;padding:2px 6px;border-radius:4px;background:#e0f2fe;color:#0284c7;">02</span>
+              <span>THÔNG SỐ GIAO DỊCH &amp; ĐẶC TRƯNG PCA</span>
+            </h2>
+            <span id="timeClockBadge" class="mono" style="font-size:11.5px;color:#0284c7;font-weight:700;">00:00 (Ngày 1)</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="f_Amount">Số tiền giao dịch ($ Amount)</label>
+              <input id="f_Amount" type="number" step="0.01" min="0" class="form-input mono" value="25.00" />
+            </div>
+
+            <div class="form-group">
+              <label for="f_Time">Thời gian (Giây từ mốc Time=0)</label>
+              <input id="f_Time" type="number" step="1" min="0" class="form-input mono" value="50000" />
+            </div>
+          </div>
+
+          <!-- Top PCA Features Grid -->
+          <div style="font-size:11px;font-weight:700;text-transform:uppercase;color:var(--text-dim);margin:12px 0 8px;">
+            Top đặc trưng PCA tương quan mạnh với Gian lận
+          </div>
+          <div class="pca-grid">
+            <div class="form-group">
+              <label for="f_V17"><span>V17</span> <span style="font-size:9.5px;color:#ef4444;font-weight:700;">r = -0.33</span></label>
+              <input id="f_V17" type="number" step="0.01" class="form-input mono" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="f_V14"><span>V14</span> <span style="font-size:9.5px;color:#ef4444;font-weight:700;">r = -0.30</span></label>
+              <input id="f_V14" type="number" step="0.01" class="form-input mono" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="f_V12"><span>V12</span> <span style="font-size:9.5px;color:#ef4444;font-weight:700;">r = -0.26</span></label>
+              <input id="f_V12" type="number" step="0.01" class="form-input mono" value="0" />
+            </div>
+          </div>
+
+          <div class="pca-grid" style="grid-template-columns: repeat(4, 1fr);">
+            <div class="form-group">
+              <label for="f_V10"><span>V10</span> <span style="font-size:9.5px;color:#ef4444;font-weight:700;">-0.22</span></label>
+              <input id="f_V10" type="number" step="0.01" class="form-input mono" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="f_V16"><span>V16</span> <span style="font-size:9.5px;color:#ef4444;font-weight:700;">-0.20</span></label>
+              <input id="f_V16" type="number" step="0.01" class="form-input mono" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="f_V4"><span>V4</span> <span style="font-size:9.5px;color:#0284c7;font-weight:700;">+0.13</span></label>
+              <input id="f_V4" type="number" step="0.01" class="form-input mono" value="0" />
+            </div>
+            <div class="form-group">
+              <label for="f_V11"><span>V11</span> <span style="font-size:9.5px;color:#0284c7;font-weight:700;">+0.15</span></label>
+              <input id="f_V11" type="number" step="0.01" class="form-input mono" value="0" />
+            </div>
+          </div>
+
+          <details class="extra-pca-drawer">
+            <summary>
+              <span>Xem &amp; Tùy chỉnh 21 đặc trưng PCA còn lại (V1–V28)</span>
+              <span class="mono" style="font-size:11px;color:var(--text-dim);">+ Mở rộng</span>
+            </summary>
+            <div id="extraVGrid" class="drawer-grid"></div>
+          </details>
+
+          <div class="action-bar">
+            <button id="btnPredict" type="button" class="btn-primary" onclick="handleManualPredict()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              <span id="btnPredictText">THẨM ĐỊNH RỦI RO &amp; ĐỒNG THUẬN 5 MÔ HÌNH</span>
+            </button>
+            <button type="button" class="btn-secondary" onclick="handleResetSample()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></svg>
+              Khôi phục gốc
+            </button>
+          </div>
+        </section>
+
+        <!-- RIGHT COLUMN: VISUAL CHARTS & VERDICT (MATCHING REFERENCE IMAGE 2) -->
+        <section class="card">
+          <div class="card-title-bar">
+            <h2>
+              <span style="font-size:10px;font-weight:800;padding:2px 6px;border-radius:4px;background:#e0f2fe;color:#0284c7;">03</span>
+              <span>TRUNG TÂM PHÁN QUYẾT &amp; HỆ THỐNG BIỂU ĐỒ TRỰC QUAN</span>
+            </h2>
+            <span id="compareThrLabel" class="mono" style="font-size:11.5px;font-weight:700;color:#ef4444;">Ngưỡng: 0.50</span>
+          </div>
+
+          <!-- ==============================================================
+               BIỂU ĐỒ 1: CỤM VÒNG TRÒN DONUT RINGS (MATCHING BOTTOM OF IMAGE 2)
+               ============================================================== -->
+          <div class="donut-rings-row">
+            <!-- Donut 1: Risk Score -->
+            <div class="donut-card">
+              <div class="donut-svg-wrap">
+                <svg class="donut-svg" viewBox="0 0 72 72">
+                  <circle class="donut-circle-bg" cx="36" cy="36" r="30" />
+                  <circle id="donutRiskFill" class="donut-circle-fill" stroke="#10b981" cx="36" cy="36" r="30" />
+                </svg>
+                <div id="donutRiskVal" class="donut-center-text mono" style="color:#10b981;">0%</div>
+              </div>
+              <div class="donut-label">ĐIỂM RỦI RO</div>
+            </div>
+
+            <!-- Donut 2: Consensus -->
+            <div class="donut-card">
+              <div class="donut-svg-wrap">
+                <svg class="donut-svg" viewBox="0 0 72 72">
+                  <circle class="donut-circle-bg" cx="36" cy="36" r="30" />
+                  <circle id="donutConsensusFill" class="donut-circle-fill" stroke="#0284c7" cx="36" cy="36" r="30" />
+                </svg>
+                <div id="donutConsensusVal" class="donut-center-text mono" style="color:#0284c7;">0/5</div>
+              </div>
+              <div class="donut-label">ĐỒNG THUẬN</div>
+            </div>
+
+            <!-- Donut 3: Threshold -->
+            <div class="donut-card">
+              <div class="donut-svg-wrap">
+                <svg class="donut-svg" viewBox="0 0 72 72">
+                  <circle class="donut-circle-bg" cx="36" cy="36" r="30" />
+                  <circle id="donutThrFill" class="donut-circle-fill" stroke="#8b5cf6" cx="36" cy="36" r="30" />
+                </svg>
+                <div id="donutThrVal" class="donut-center-text mono" style="color:#8b5cf6;">50%</div>
+              </div>
+              <div class="donut-label">NGƯỠNG CHỌN</div>
+            </div>
+
+            <!-- Donut 4: Confidence -->
+            <div class="donut-card">
+              <div class="donut-svg-wrap">
+                <svg class="donut-svg" viewBox="0 0 72 72">
+                  <circle class="donut-circle-bg" cx="36" cy="36" r="30" />
+                  <circle id="donutConfFill" class="donut-circle-fill" stroke="#f59e0b" cx="36" cy="36" r="30" />
+                </svg>
+                <div id="donutConfVal" class="donut-center-text mono" style="color:#f59e0b;">100%</div>
+              </div>
+              <div class="donut-label">ĐỘ TIN CẬY</div>
+            </div>
+          </div>
+
+          <!-- Verdict Decision Banner -->
+          <div id="verdictBanner" class="verdict-banner safe">
+            <div>
+              <div id="verdictTag" class="verdict-badge-tag" style="background:#dcfce7;color:#166534;border:1px solid #bbf7d0;">
+                ● PHÊ DUYỆT TỰ ĐỘNG
+              </div>
+              <div id="verdictActionText" style="font-size:12px;color:var(--text-muted);margin-top:4px;">
+                Giao dịch an toàn, chấp thuận thanh toán tức thì.
+              </div>
+            </div>
+            <div id="verdictScoreBadge" class="mono" style="font-size:24px;font-weight:800;color:#10b981;">
+              0.0/100
+            </div>
+          </div>
+
+          <!-- ==============================================================
+               BIỂU ĐỒ 2: BIỂU ĐỒ CỘT NGANG 5 MÔ HÌNH (MATCHING MIDDLE OF IMAGE 2)
+               CÓ ĐƯỜNG KẺ GIÓNG NGƯỠNG ĐỎ
+               ============================================================== -->
+          <div class="model-bars-card">
+            <div class="model-bars-header">
+              <span>Biểu đồ xác suất 5 mô hình (Kèm đường ngưỡng đỏ)</span>
+              <span id="activeModelBadge" class="mono" style="color:#0284c7;font-size:10px;">Random Forest</span>
+            </div>
+            <div class="horizontal-chart-area">
+              <!-- Moving Red Dashed Threshold Line -->
+              <div id="redThresholdLine" class="red-threshold-line" style="left: calc(140px + (100% - 217px) * 0.5);">
+                <div id="redThresholdTag" class="red-threshold-tag mono">0.50</div>
+              </div>
+
+              <!-- 5 Model Rows Container -->
+              <div id="modelBarsContainer" style="display:flex;flex-direction:column;gap:10px;"></div>
+            </div>
+          </div>
+
+          <!-- ==============================================================
+               BIỂU ĐỒ 2.5: BẢNG GIẢI THÍCH TRÍ TUỆ NHÂN TẠO (XAI DEVIATIONS TABLE)
+               ============================================================== -->
+          <div class="xai-deviations-card">
+            <div class="xai-header">
+              <span>Top 5 đặc trưng lệch mạnh nhất (Giải thích mô hình - XAI)</span>
+              <span class="mono" style="font-size:10px;color:#0284c7;font-weight:700;">So với trung vị hợp lệ</span>
+            </div>
+            <div class="xai-table-wrap">
+              <table class="xai-table">
+                <thead>
+                  <tr>
+                    <th>Đặc trưng</th>
+                    <th>Giá trị nhập</th>
+                    <th>Trung vị hợp lệ</th>
+                    <th style="text-align:right;">Độ lệch (Delta)</th>
+                  </tr>
+                </thead>
+                <tbody id="xaiTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ==============================================================
+               BIỂU ĐỒ 3: BIỂU ĐỒ DIỆN TÍCH SÓNG MỀM MƯỢT (MATCHING LEFT OF IMAGE 2)
+               ============================================================== -->
+          <div class="wave-chart-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--text-dim);">
+              <span>Phân bố biên độ rủi ro &amp; chu kỳ giờ giao dịch (24h Wave)</span>
+              <span id="waveCurrentHour" class="mono" style="color:#0284c7;">Mốc: 14:00</span>
+            </div>
+            <div class="wave-svg-container">
+              <svg class="wave-svg" viewBox="0 0 500 90" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="waveGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#0284c7" stop-opacity="0.35"/>
+                    <stop offset="100%" stop-color="#0284c7" stop-opacity="0.0"/>
+                  </linearGradient>
+                </defs>
+                <!-- Background Wave Area -->
+                <path d="M 0 75 Q 70 30, 140 60 T 280 40 T 420 65 T 500 35 L 500 90 L 0 90 Z" fill="url(#waveGradient)"/>
+                <path d="M 0 75 Q 70 30, 140 60 T 280 40 T 420 65 T 500 35" fill="none" stroke="#0284c7" stroke-width="2.5"/>
+                <!-- Current Transaction Marker Pin -->
+                <line id="waveMarkerLine" x1="250" y1="10" x2="250" y2="90" stroke="#ef4444" stroke-width="2" stroke-dasharray="3,3"/>
+                <circle id="waveMarkerDot" cx="250" cy="45" r="5" fill="#ef4444" stroke="#ffffff" stroke-width="2"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Policy Slider -->
+          <div class="policy-box">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-size:11.5px;font-weight:700;color:var(--text-main);">
+                Điều chỉnh Ngưỡng Quyết Định (Threshold)
+              </span>
+              <span id="thrVal" class="mono" style="font-size:13px;font-weight:800;color:#0284c7;">0.50</span>
+            </div>
+            <input id="thresholdSlider" type="range" class="slider-range" min="0.05" max="0.95" step="0.05" value="0.50" />
+            <div class="policy-chips">
+              <button type="button" class="policy-chip" onclick="setThreshold(0.30)">0.30 · Yêu cầu OTP</button>
+              <button type="button" class="policy-chip" onclick="setThreshold(0.50)">0.50 · Mặc định</button>
+              <button type="button" class="policy-chip" onclick="setThreshold(0.55)">0.55 · Max F1 (Random Forest)</button>
+              <button type="button" class="policy-chip" onclick="setThreshold(0.80)">0.80 · Khóa nghiêm ngặt</button>
+            </div>
+          </div>
+
+          <!-- Hidden select element for 100% JS backward compatibility -->
+          <select id="modelSelect"></select>
+
+        </section>
+
+      </div> <!-- /.workspace-grid -->
+
+    </div> <!-- /.dashboard-content -->
+  </main>
+
+  <!-- Toast Tray -->
+  <div id="toastTray" class="toast-tray"></div>
+
+  <!-- ======================================================================
+       JAVASCRIPT LOGIC (100% PRESERVED, ZERO BACKEND CHANGES)
+       ====================================================================== -->
+  <script>
+    const ALL_FEATURES = ["Time", "Amount", ...Array.from({length: 28}, (_, i) => `V${i + 1}`)];
+    const MAIN_FEATURES = new Set(["Time", "Amount", "V17", "V14", "V12", "V10", "V16", "V4", "V11"]);
+    const DONUT_CIRCUMFERENCE = 188.5; // 2 * PI * 30
+
+    let SAMPLES = [];
+    let MODELS = [];
+    let SELECTED_SAMPLE_INDEX = 0;
+    let CURRENT_MODEL_NAME = "Random Forest (Mở rộng)";
+    let SLIDER_TIMER = null;
+    let CURRENT_FILTER = "all";
+    let LAST_PRED_DATA = null;
+
+    function esc(val) {
+      return String(val).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function showToast(msg, icon = "✓") {
+      const tray = document.getElementById("toastTray");
+      const item = document.createElement("div");
+      item.className = "toast-msg";
+      item.innerHTML = `<span style="color:#38bdf8;">${icon}</span><span>${msg}</span>`;
+      tray.appendChild(item);
+      setTimeout(() => {
+        item.style.opacity = "0";
+        item.style.transform = "translateY(10px)";
+        setTimeout(() => item.remove(), 300);
+      }, 2400);
+    }
+
+    function updateTimeClock() {
+      const el = document.getElementById("f_Time");
+      const badge = document.getElementById("timeClockBadge");
+      const waveLabel = document.getElementById("waveCurrentHour");
+      const waveLine = document.getElementById("waveMarkerLine");
+      const waveDot = document.getElementById("waveMarkerDot");
+      if (!el || !badge) return;
+
+      const secs = Math.max(0, Number(el.value || 0));
+      const day = Math.floor(secs / 86400) + 1;
+      const daySec = secs % 86400;
+      const hour = Math.floor(daySec / 3600);
+      const mm = String(Math.floor((daySec % 3600) / 60)).padStart(2, "0");
+      const hh = String(hour).padStart(2, "0");
+
+      badge.textContent = `${hh}:${mm} (Ngày ${day})`;
+      if (waveLabel) waveLabel.textContent = `Mốc: ${hh}:${mm}`;
+
+      // Update Wave Pin position (0 to 500 across 24 hours)
+      const xPos = Math.round((hour / 24) * 480) + 10;
+      if (waveLine) {
+        waveLine.setAttribute("x1", xPos);
+        waveLine.setAttribute("x2", xPos);
+      }
+      if (waveDot) {
+        waveDot.setAttribute("cx", xPos);
+      }
+    }
+
+    function buildExtraDrawer() {
+      const grid = document.getElementById("extraVGrid");
+      grid.innerHTML = "";
+      for (const feat of ALL_FEATURES) {
+        if (MAIN_FEATURES.has(feat)) continue;
+        const wrap = document.createElement("div");
+        wrap.className = "form-group";
+        wrap.innerHTML = `
+          <label for="f_${feat}">${feat}</label>
+          <input id="f_${feat}" type="number" step="0.01" class="form-input mono" style="padding:5px 8px;font-size:11.5px;" value="0" />
+        `;
+        grid.appendChild(wrap);
+      }
+      for (const feat of ALL_FEATURES) {
+        const el = document.getElementById(`f_${feat}`);
+        if (!el) continue;
+        el.addEventListener("input", () => {
+          if (feat === "Time") updateTimeClock();
+        });
+        el.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleManualPredict();
+          }
+        });
+      }
+    }
+
+    /* Select Algorithm in Sidebar (User Request: "Cho hết phần thuật toán sang đây") */
+    function selectModel(modelName) {
+      CURRENT_MODEL_NAME = modelName;
+      const selectEl = document.getElementById("modelSelect");
+      if (selectEl) selectEl.value = modelName;
+
+      // Update active state in sidebar buttons
+      const mapping = {
+        "Random Forest (Mở rộng)": "btn_m_rf",
+        "HistGradientBoosting (Mở rộng)": "btn_m_hgb",
+        "K-NN (Tuned)": "btn_m_knn",
+        "Decision Tree (Tuned)": "btn_m_dt",
+        "Gaussian Naive Bayes": "btn_m_nb"
+      };
+
+      Object.values(mapping).forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) btn.classList.remove("active");
+      });
+
+      const activeBtnId = mapping[modelName];
+      if (activeBtnId) {
+        const btn = document.getElementById(activeBtnId);
+        if (btn) btn.classList.add("active");
+      }
+
+      document.getElementById("activeModelTag").textContent = `Model: ${modelName}`;
+      showToast(`Đã kích hoạt thuật toán: ${modelName}`);
+      runPredict();
+    }
+
+    function renderSampleTable() {
+      const tbody = document.getElementById("sampleTableBody");
+      tbody.innerHTML = "";
+
+      SAMPLES.forEach((s, idx) => {
+        let isMatch = true;
+        const catLower = (s.category || "").toLowerCase();
+        if (CURRENT_FILTER === "ok" && !catLower.includes("hợp lệ")) isMatch = false;
+        else if (CURRENT_FILTER === "tp" && !catLower.includes("phát hiện đúng")) isMatch = false;
+        else if (CURRENT_FILTER === "fn" && !catLower.includes("khó")) isMatch = false;
+
+        if (!isMatch) return;
+
+        const tr = document.createElement("tr");
+        if (idx === SELECTED_SAMPLE_INDEX) tr.className = "selected";
+
+        const secs = Math.max(0, Number(s.Time || 0));
+        const day = Math.floor(secs / 86400) + 1;
+        const daySec = secs % 86400;
+        const hh = String(Math.floor(daySec / 3600)).padStart(2, "0");
+        const mm = String(Math.floor((daySec % 3600) / 60)).padStart(2, "0");
+
+        const labelBadge = s.y_true === 1
+          ? `<span style="background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;">GIAN LẬN (1)</span>`
+          : `<span style="background:#dcfce7;color:#15803d;border:1px solid #86efac;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;">HỢP LỆ (0)</span>`;
+
+        tr.innerHTML = `
+          <td class="mono" style="font-weight:700;">#TX-${s.test_index}</td>
+          <td class="mono">${hh}:${mm} · N${day}</td>
+          <td class="mono" style="font-weight:700;">$${Number(s.Amount).toFixed(2)}</td>
+          <td>${esc(s.category)}</td>
+          <td style="text-align:right;">${labelBadge}</td>
+        `;
+
+        tr.addEventListener("click", () => {
+          SELECTED_SAMPLE_INDEX = idx;
+          renderSampleTable();
+          loadSampleData(s);
+          runPredict();
+          showToast(`Đã nạp giao dịch #TX-${s.test_index} ($${Number(s.Amount).toFixed(2)})`);
+        });
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterSamples(type) {
+      CURRENT_FILTER = type;
+      renderSampleTable();
+
+      const firstMatchIdx = SAMPLES.findIndex(s => {
+        const cat = (s.category || "").toLowerCase();
+        if (type === "ok") return cat.includes("hợp lệ");
+        if (type === "tp") return cat.includes("phát hiện đúng");
+        if (type === "fn") return cat.includes("khó");
+        return true;
+      });
+
+      if (firstMatchIdx >= 0) {
+        SELECTED_SAMPLE_INDEX = firstMatchIdx;
+        renderSampleTable();
+        loadSampleData(SAMPLES[firstMatchIdx]);
+        runPredict();
+      }
+    }
+
+    function loadSampleData(sample) {
+      if (!sample) return;
+      for (const feat of ALL_FEATURES) {
+        const el = document.getElementById(`f_${feat}`);
+        if (el) el.value = feat === "Time" ? Number(sample[feat]).toFixed(0) : Number(sample[feat]).toFixed(4);
+      }
+      updateTimeClock();
+
+      const gtBadge = document.getElementById("groundTruthBadge");
+      if (sample.y_true === 1) {
+        gtBadge.innerHTML = `<span style="background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;">Class = 1 · GIAN LẬN THỰC TẾ</span>`;
+      } else {
+        gtBadge.innerHTML = `<span style="background:#dcfce7;color:#15803d;border:1px solid #86efac;padding:3px 8px;border-radius:4px;font-size:11px;font-weight:700;">Class = 0 · HỢP LỆ THỰC TẾ</span>`;
+      }
+    }
+
+    function setThreshold(val) {
+      const slider = document.getElementById("thresholdSlider");
+      slider.value = val.toFixed(2);
+      document.getElementById("thrVal").textContent = val.toFixed(2);
+      showToast(`Đã thiết lập ngưỡng chính sách: ${val.toFixed(2)}`);
+      runPredict();
+    }
+
+    function handleResetSample() {
+      const sample = SAMPLES[SELECTED_SAMPLE_INDEX];
+      if (sample) {
+        loadSampleData(sample);
+        runPredict();
+        showToast("✓ Đã khôi phục các giá trị theo mẫu gốc từ tập Test!");
+      }
+    }
+
+    async function handleManualPredict() {
+      const btn = document.getElementById("btnPredict");
+      const btnText = document.getElementById("btnPredictText");
+      btnText.textContent = "ĐANG THẨM ĐỊNH RỦI RO...";
+      btn.style.opacity = "0.8";
+
+      const startTime = performance.now();
+      await runPredict();
+      const elapsed = Math.round(performance.now() - startTime);
+
+      btnText.textContent = "THẨM ĐỊNH RỦI RO & ĐỒNG THUẬN 5 MÔ HÌNH";
+      btn.style.opacity = "1";
+
+      const prob = (Number(LAST_PRED_DATA?.probability || 0) * 100).toFixed(1);
+      const isFraud = LAST_PRED_DATA?.prediction === 1;
+      showToast(`✓ Đã thẩm định (${elapsed}ms): Điểm rủi ro ${prob}/100 · ${isFraud ? "CẢNH BÁO GIAN LẬN" : "HỢP LỆ"}`, isFraud ? "🚨" : "✓");
+    }
+
+    function collectPayload() {
+      const features = {};
+      for (const feat of ALL_FEATURES) {
+        const el = document.getElementById(`f_${feat}`);
+        features[feat] = el ? Number(el.value || 0) : 0;
+      }
+      return {
+        model: CURRENT_MODEL_NAME,
+        threshold: Number(document.getElementById("thresholdSlider").value),
+        features,
+      };
+    }
+
+    async function runPredict() {
+      const payload = collectPayload();
+      const res = await fetch("/api/predict", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      LAST_PRED_DATA = data;
+
+      const prob = Math.max(0, Math.min(1, Number(data.probability || 0)));
+      const score = (prob * 100).toFixed(1);
+
+      document.getElementById("compareThrLabel").textContent = `Ngưỡng: ${payload.threshold.toFixed(2)}`;
+      document.getElementById("activeModelBadge").textContent = payload.model;
+
+      // ====================================================================
+      // UPDATE 1. QUAD DONUT RINGS (IMAGE 2 INSPIRATION)
+      // ====================================================================
+      // Donut 1: Risk Score
+      const donutRiskFill = document.getElementById("donutRiskFill");
+      const donutRiskVal = document.getElementById("donutRiskVal");
+      const riskOffset = DONUT_CIRCUMFERENCE * (1 - prob);
+      donutRiskFill.style.strokeDashoffset = riskOffset.toFixed(1);
+      donutRiskVal.textContent = `${score}%`;
+
+      // Donut 2: Consensus (Count how many models voted fraud)
+      const fraudVotes = data.all_models.filter(m => m.prediction === 1).length;
+      const consensusRatio = fraudVotes / data.all_models.length;
+      const donutConsensusFill = document.getElementById("donutConsensusFill");
+      const donutConsensusVal = document.getElementById("donutConsensusVal");
+      donutConsensusFill.style.strokeDashoffset = (DONUT_CIRCUMFERENCE * (1 - consensusRatio)).toFixed(1);
+      donutConsensusVal.textContent = `${fraudVotes}/5`;
+
+      // Donut 3: Threshold
+      const donutThrFill = document.getElementById("donutThrFill");
+      const donutThrVal = document.getElementById("donutThrVal");
+      donutThrFill.style.strokeDashoffset = (DONUT_CIRCUMFERENCE * (1 - payload.threshold)).toFixed(1);
+      donutThrVal.textContent = `${Math.round(payload.threshold * 100)}%`;
+
+      // Donut 4: Confidence
+      const confidence = Math.abs(prob - payload.threshold) / Math.max(payload.threshold, 1 - payload.threshold);
+      const confVal = Math.min(100, Math.round(50 + confidence * 50));
+      const donutConfFill = document.getElementById("donutConfFill");
+      const donutConfVal = document.getElementById("donutConfVal");
+      donutConfFill.style.strokeDashoffset = (DONUT_CIRCUMFERENCE * (1 - confVal / 100)).toFixed(1);
+      donutConfVal.textContent = `${confVal}%`;
+
+      // Verdict Banner
+      const banner = document.getElementById("verdictBanner");
+      const tag = document.getElementById("verdictTag");
+      const actionText = document.getElementById("verdictActionText");
+      const scoreBadge = document.getElementById("verdictScoreBadge");
+
+      banner.classList.remove("safe", "warn", "fraud");
+      scoreBadge.textContent = `${score}/100`;
+
+      if (data.prediction === 1) {
+        banner.classList.add("fraud");
+        donutRiskFill.setAttribute("stroke", "#ef4444");
+        donutRiskVal.style.color = "#ef4444";
+        scoreBadge.style.color = "#ef4444";
+        tag.style.background = "#fee2e2";
+        tag.style.color = "#b91c1c";
+        tag.style.borderColor = "#fca5a5";
+        tag.innerHTML = "🚨 TỪ CHỐI & KHÓA THẺ TỨC THÌ";
+        actionText.textContent = prob >= 0.80
+          ? "Rủi ro nghiêm trọng: Tự động khóa thẻ tức thì để bảo toàn số dư cho chủ thẻ."
+          : "Cảnh báo gian lận: Chặn lệnh chuyển tiền và gửi cảnh báo an ninh khẩn cấp.";
+      } else if (prob >= payload.threshold * 0.6) {
+        banner.classList.add("warn");
+        donutRiskFill.setAttribute("stroke", "#f59e0b");
+        donutRiskVal.style.color = "#f59e0b";
+        scoreBadge.style.color = "#f59e0b";
+        tag.style.background = "#fffbeb";
+        tag.style.color = "#b45309";
+        tag.style.borderColor = "#fde68a";
+        tag.innerHTML = "⚠ YÊU CẦU XÁC THỰC BỔ SUNG (OTP)";
+        actionText.textContent = "Giao dịch có dấu hiệu nghi vấn: Yêu cầu xác thực bảo mật 2 lớp (OTP SMS / Smart OTP).";
+      } else {
+        banner.classList.add("safe");
+        donutRiskFill.setAttribute("stroke", "#10b981");
+        donutRiskVal.style.color = "#10b981";
+        scoreBadge.style.color = "#10b981";
+        tag.style.background = "#f0fdf4";
+        tag.style.color = "#15803d";
+        tag.style.borderColor = "#86efac";
+        tag.innerHTML = "✓ PHÊ DUYỆT TỰ ĐỘNG (AN TOÀN)";
+        actionText.textContent = "Giao dịch nằm trong ngưỡng an toàn, chấp thuận thanh toán bình thường.";
+      }
+
+      // ====================================================================
+      // UPDATE 2. HORIZONTAL BARS WITH RED THRESHOLD GUIDE LINE
+      // ====================================================================
+      const redLine = document.getElementById("redThresholdLine");
+      const redTag = document.getElementById("redThresholdTag");
+      redLine.style.left = `calc(140px + (100% - 217px) * ${payload.threshold})`;
+      redTag.textContent = payload.threshold.toFixed(2);
+
+      const colorPalette = ["#0284c7", "#0d9488", "#10b981", "#8b5cf6", "#f59e0b"];
+
+      const barsContainer = document.getElementById("modelBarsContainer");
+      barsContainer.innerHTML = data.all_models.map((item, idx) => {
+        const pPct = (item.probability * 100).toFixed(1);
+        const isCurrent = item.model === payload.model;
+        const isBlock = item.prediction === 1;
+        const barColor = isBlock ? "#ef4444" : colorPalette[idx % colorPalette.length];
+        const badge = isBlock
+          ? `<span style="background:#fee2e2;color:#b91c1c;border:1px solid #fca5a5;padding:2px 5px;border-radius:4px;font-size:9.5px;font-weight:700;">BLOCK</span>`
+          : `<span style="background:#dcfce7;color:#15803d;border:1px solid #86efac;padding:2px 5px;border-radius:4px;font-size:9.5px;font-weight:700;">ALLOW</span>`;
+
+        return `
+          <div class="model-bar-row" style="${isCurrent ? 'background:#f0f9ff;padding:4px 6px;border-radius:6px;' : ''}">
+            <div class="model-bar-title" title="${esc(item.model)}">
+              ${isCurrent ? '<strong style="color:#0284c7;">★ </strong>' : ''}
+              <strong>${esc(item.model)}</strong>
+            </div>
+            <div class="model-bar-track">
+              <div class="model-bar-fill" style="width:${Math.max(2, item.probability * 100)}%;background:${barColor};"></div>
+            </div>
+            <div class="mono" style="font-size:11px;font-weight:700;text-align:right;">
+              ${pPct}% ${badge}
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      // Update XAI Deviations Table
+      const xaiBody = document.getElementById("xaiTableBody");
+      if (xaiBody && data.top_deviations) {
+        xaiBody.innerHTML = data.top_deviations.map((d) => {
+          const sign = d.delta >= 0 ? "+" : "";
+          const isRed = d.delta < 0 || (d.feature === "Amount" && d.delta > 500);
+          const deltaColor = isRed ? "#ef4444" : "#0284c7";
+          const valStr = d.feature === "Amount" ? `$${d.value.toFixed(2)}` : d.value.toFixed(3);
+          const medStr = d.feature === "Amount" ? `$${d.normal_median.toFixed(2)}` : d.normal_median.toFixed(3);
+          const deltaStr = d.feature === "Amount" ? `${sign}$${d.delta.toFixed(2)}` : `${sign}${d.delta.toFixed(3)}`;
+          return `
+            <tr>
+              <td class="mono" style="font-weight:800;color:var(--text-main);">${esc(d.feature)}</td>
+              <td class="mono">${valStr}</td>
+              <td class="mono">${medStr}</td>
+              <td class="mono" style="text-align:right;font-weight:700;color:${deltaColor};">${deltaStr}</td>
+            </tr>
+          `;
+        }).join("");
+      }
+    }
+
+    async function init() {
+      buildExtraDrawer();
+
+      const res = await fetch("/api/metadata");
+      const meta = await res.json();
+      SAMPLES = meta.samples;
+      MODELS = meta.models;
+
+      renderSampleTable();
+
+      const selectEl = document.getElementById("modelSelect");
+      MODELS.forEach((m) => {
+        const opt = document.createElement("option");
+        opt.value = m;
+        opt.textContent = m;
+        selectEl.appendChild(opt);
+      });
+
+      const slider = document.getElementById("thresholdSlider");
+      slider.addEventListener("input", (e) => {
+        document.getElementById("thrVal").textContent = Number(e.target.value).toFixed(2);
+        clearTimeout(SLIDER_TIMER);
+        SLIDER_TIMER = setTimeout(runPredict, 60);
+      });
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const sampleParam = urlParams.get("sample");
+      const thrParam = urlParams.get("thr");
+      const modelParam = urlParams.get("model");
+
+      if (thrParam) {
+        const val = parseFloat(thrParam);
+        slider.value = val.toFixed(2);
+        document.getElementById("thrVal").textContent = val.toFixed(2);
+      }
+      if (modelParam && MODELS.includes(modelParam)) {
+        CURRENT_MODEL_NAME = modelParam;
+        selectModel(modelParam);
+      }
+
+      if (sampleParam !== null && SAMPLES[parseInt(sampleParam)]) {
+        SELECTED_SAMPLE_INDEX = parseInt(sampleParam);
+        renderSampleTable();
+        loadSampleData(SAMPLES[SELECTED_SAMPLE_INDEX]);
+      } else if (SAMPLES.length > 0) {
+        loadSampleData(SAMPLES[0]);
+      }
+      runPredict();
+    }
+
+    function openBenchmarkModal() {
+      const modal = document.getElementById("benchmarkModal");
+      if (modal) {
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+    }
+
+    function closeBenchmarkModal() {
+      const modal = document.getElementById("benchmarkModal");
+      if (modal) {
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+    }
+
+    function handleModalBackdropClick(e) {
+      if (e.target && e.target.id === "benchmarkModal") {
+        closeBenchmarkModal();
+      }
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeBenchmarkModal();
+      }
+    });
+
+    init();
+  </script>
+
+  <!-- ======================================================================
+       MODAL: BẢNG ĐỐI CHỨNG HIỆU NĂNG LUỒNG A VS LUỒNG B (CHỐNG DATA LEAKAGE)
+       ====================================================================== -->
+  <div id="benchmarkModal" class="benchmark-modal-overlay" onclick="handleModalBackdropClick(event)">
+    <div class="benchmark-modal-card">
+      <div class="benchmark-modal-header">
+        <div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:18px;">📊</span>
+            <h2 style="font-size:16px;font-weight:800;color:var(--text-main);margin:0;">BẢNG ĐỐI CHỨNG THỰC NGHIỆM: LUỒNG A vs LUỒNG B</h2>
+            <span class="mono" style="font-size:11px;font-weight:700;background:#dbeafe;color:#1e40af;padding:2px 8px;border-radius:6px;">Chống Data Leakage</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:4px;">
+            Đánh giá trên tập kiểm thử độc lập <strong>56.746 giao dịch</strong> (tỉ lệ gian lận 0.172%) · Minh chứng nghiên cứu Nhóm 12
+          </div>
+        </div>
+        <button type="button" onclick="closeBenchmarkModal()" style="background:none;border:none;font-size:22px;color:var(--text-muted);cursor:pointer;padding:4px 8px;border-radius:6px;line-height:1;">✕</button>
+      </div>
+
+      <div class="benchmark-modal-body">
+        
+        <!-- TRỌNG TÂM: KẾT QUẢ ĐỘT PHÁ DECISION TREE -->
+        <div class="highlight-hieu-banner">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:16px;">🌟</span>
+              <strong style="color:#0f172a;font-size:13.5px;">Đột phá Hiệu năng Cây Quyết định — Decision Tree (max_depth=6)</strong>
+            </div>
+            <span class="mono" style="font-size:11px;background:#10b981;color:#ffffff;padding:3px 8px;border-radius:4px;font-weight:700;">Đột phá Hiệu quả</span>
+          </div>
+          <div style="font-size:12px;color:#334155;line-height:1.5;">
+            Đối chứng trực tiếp giữa <strong>Luồng A</strong> (bị rò rỉ dữ liệu & ép cân bằng lỗi) và <strong>Luồng B</strong> (khử trùng lặp, mã hóa chu kỳ giờ 24h, log-amount và khóa độ sâu 6 tầng):
+          </div>
+          
+          <div class="highlight-hieu-stats">
+            <div class="hieu-stat-box">
+              <div style="font-size:11px;color:var(--text-muted);font-weight:600;">Báo động nhầm (FP)</div>
+              <div class="mono" style="font-size:18px;font-weight:800;color:#10b981;margin-top:2px;">
+                459 <span style="font-size:12px;color:#64748b;font-weight:400;">→</span> 5 ca
+              </div>
+              <div style="font-size:10.5px;color:#15803d;font-weight:600;margin-top:2px;">Giảm 99% báo nhầm oan</div>
+            </div>
+
+            <div class="hieu-stat-box">
+              <div style="font-size:11px;color:var(--text-muted);font-weight:600;">Độ chính xác (Precision)</div>
+              <div class="mono" style="font-size:18px;font-weight:800;color:#0284c7;margin-top:2px;">
+                15.16% <span style="font-size:12px;color:#64748b;font-weight:400;">→</span> 92.42%
+              </div>
+              <div style="font-size:10.5px;color:#0369a1;font-weight:600;margin-top:2px;">Tăng vọt +77.26%</div>
+            </div>
+
+            <div class="hieu-stat-box">
+              <div style="font-size:11px;color:var(--text-muted);font-weight:600;">F1-Score tổng thể</div>
+              <div class="mono" style="font-size:18px;font-weight:800;color:#8b5cf6;margin-top:2px;">
+                0.2567 <span style="font-size:12px;color:#64748b;font-weight:400;">→</span> 0.7578
+              </div>
+              <div style="font-size:10.5px;color:#6d28d9;font-weight:600;margin-top:2px;">Tăng gấp gần 3 lần</div>
+            </div>
+
+            <div class="hieu-stat-box">
+              <div style="font-size:11px;color:var(--text-muted);font-weight:600;">Tốc độ suy luận (POS)</div>
+              <div class="mono" style="font-size:18px;font-weight:800;color:#f59e0b;margin-top:2px;">
+                0.006s
+              </div>
+              <div style="font-size:10.5px;color:#b45309;font-weight:600;margin-top:2px;">Kiểm tra 56.7k GD tức thì</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FULL BENCHMARK TABLE -->
+        <div style="border:1px solid var(--border-card);border-radius:10px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+          <div style="max-height:360px;overflow-y:auto;">
+            <table class="benchmark-table">
+              <thead>
+                <tr>
+                  <th>Luồng Pipeline</th>
+                  <th>Thuật toán</th>
+                  <th>Precision</th>
+                  <th>Recall</th>
+                  <th>F1-Score</th>
+                  <th>FP (Báo nhầm)</th>
+                  <th>FN (Bỏ sót)</th>
+                  <th>TP (Bắt đúng)</th>
+                  <th>Thời gian</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr style="color:#64748b;font-style:italic;">
+                  <td>Flow A (Cơ bản)</td>
+                  <td>Baseline: Dummy (Most Frequent)</td>
+                  <td class="mono">0.00%</td>
+                  <td class="mono">0.00%</td>
+                  <td class="mono">0.0000</td>
+                  <td class="mono">0</td>
+                  <td class="mono">98</td>
+                  <td class="mono">0</td>
+                  <td class="mono">0.00s</td>
+                </tr>
+                <tr>
+                  <td>Flow A (Chưa scale)</td>
+                  <td>K-NN (k=5, Unscaled) ⚠️</td>
+                  <td class="mono">100.00%</td>
+                  <td class="mono">3.06%</td>
+                  <td class="mono">0.0594</td>
+                  <td class="mono">0</td>
+                  <td class="mono">95</td>
+                  <td class="mono">3</td>
+                  <td class="mono">9.89s</td>
+                </tr>
+                <tr>
+                  <td>Flow A (Cơ bản)</td>
+                  <td>K-NN (k=5, StandardScaler)</td>
+                  <td class="mono">91.46%</td>
+                  <td class="mono">76.53%</td>
+                  <td class="mono">0.8333</td>
+                  <td class="mono">7</td>
+                  <td class="mono">23</td>
+                  <td class="mono">75</td>
+                  <td class="mono">8.61s</td>
+                </tr>
+                <tr>
+                  <td>Flow A (Cơ bản)</td>
+                  <td>Gaussian Naive Bayes</td>
+                  <td class="mono">5.83%</td>
+                  <td class="mono">84.69%</td>
+                  <td class="mono">0.1091</td>
+                  <td class="mono" style="color:#dc2626;font-weight:700;">1340</td>
+                  <td class="mono">15</td>
+                  <td class="mono">83</td>
+                  <td class="mono">0.03s</td>
+                </tr>
+                <!-- ROW FLOW A DECISION TREE -->
+                <tr class="row-flow-a-dt">
+                  <td style="color:#dc2626;font-weight:700;">🔴 Flow A (Rò rỉ)</td>
+                  <td><strong>Decision Tree (Tuned: depth=6, balanced)</strong></td>
+                  <td class="mono" style="color:#dc2626;font-weight:700;">15.16%</td>
+                  <td class="mono">83.67%</td>
+                  <td class="mono" style="color:#dc2626;font-weight:700;">0.2567</td>
+                  <td class="mono" style="color:#dc2626;font-weight:800;background:#fee2e2;">459 ⚠️</td>
+                  <td class="mono">16</td>
+                  <td class="mono">82</td>
+                  <td class="mono">0.005s</td>
+                </tr>
+                <tr>
+                  <td>Flow A (Cơ bản)</td>
+                  <td>Random Forest (Mở rộng)</td>
+                  <td class="mono">88.37%</td>
+                  <td class="mono">77.55%</td>
+                  <td class="mono">0.8261</td>
+                  <td class="mono">10</td>
+                  <td class="mono">22</td>
+                  <td class="mono">76</td>
+                  <td class="mono">0.08s</td>
+                </tr>
+                <tr>
+                  <td>Flow B (Cải tiến)</td>
+                  <td>K-NN (Tuned: k=3, distance)</td>
+                  <td class="mono">94.29%</td>
+                  <td class="mono">69.47%</td>
+                  <td class="mono">0.8000</td>
+                  <td class="mono">4</td>
+                  <td class="mono">29</td>
+                  <td class="mono">66</td>
+                  <td class="mono">9.08s</td>
+                </tr>
+                <tr>
+                  <td>Flow B (Cải tiến)</td>
+                  <td>GaussianNB (PowerTransformer @ 0.95)</td>
+                  <td class="mono">6.76%</td>
+                  <td class="mono">78.95%</td>
+                  <td class="mono">0.1246</td>
+                  <td class="mono">1034</td>
+                  <td class="mono">20</td>
+                  <td class="mono">75</td>
+                  <td class="mono">0.03s</td>
+                </tr>
+                <!-- ROW FLOW B DECISION TREE (HIGHLIGHT) -->
+                <tr class="row-flow-b-dt">
+                  <td style="color:#16a34a;font-weight:800;">⭐ Flow B (Cải tiến)</td>
+                  <td><strong style="color:#0f172a;">Decision Tree (Tuned: depth=6, entropy)</strong></td>
+                  <td class="mono" style="color:#16a34a;font-weight:800;">92.42% ↑</td>
+                  <td class="mono">64.21%</td>
+                  <td class="mono" style="color:#16a34a;font-weight:800;">0.7578 ↑</td>
+                  <td class="mono" style="color:#16a34a;font-weight:800;background:#dcfce7;">5 ★</td>
+                  <td class="mono">34</td>
+                  <td class="mono">61</td>
+                  <td class="mono">0.006s</td>
+                </tr>
+                <tr style="background:#f8fafc;">
+                  <td style="color:#0284c7;font-weight:700;">Flow B (Cải tiến)</td>
+                  <td><strong>Random Forest (Mở rộng @ 0.55) ⭐</strong></td>
+                  <td class="mono" style="color:#0284c7;font-weight:800;">95.77%</td>
+                  <td class="mono">71.58%</td>
+                  <td class="mono" style="color:#0284c7;font-weight:800;">0.8193</td>
+                  <td class="mono" style="color:#0284c7;font-weight:800;">3</td>
+                  <td class="mono">27</td>
+                  <td class="mono">68</td>
+                  <td class="mono">0.06s</td>
+                </tr>
+                <tr>
+                  <td>Flow B (Cải tiến)</td>
+                  <td>HistGradientBoosting (Mở rộng @ 0.90)</td>
+                  <td class="mono">85.00%</td>
+                  <td class="mono">71.58%</td>
+                  <td class="mono">0.7771</td>
+                  <td class="mono">12</td>
+                  <td class="mono">27</td>
+                  <td class="mono">68</td>
+                  <td class="mono">0.04s</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="benchmark-modal-footer">
+        <div>
+          📌 Nguồn số liệu: <code class="mono" style="color:#0284c7;">outputs/metrics/model_comparison.csv</code> · Báo cáo Đề tài 12 (Đại học Đại Nam)
+        </div>
+        <button type="button" onclick="closeBenchmarkModal()" class="policy-chip" style="background:#0f172a;color:#ffffff;border:none;padding:6px 16px;cursor:pointer;">
+          Đóng cửa sổ
+        </button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

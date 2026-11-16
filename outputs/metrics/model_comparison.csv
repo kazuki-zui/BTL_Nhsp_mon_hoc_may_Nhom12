@@ -1,0 +1,25 @@
+flow,model,threshold,val_f1,val_pr_auc,accuracy,precision,recall,f1,roc_auc,pr_auc,tn,fp,fn,tp,fit_time_sec,predict_time_sec,notes
+Flow A (Cơ bản),Baseline: Dummy (Most Frequent),0.5,0.0,0.0017,0.9983,0.0,0.0,0.0,0.5,0.0017,56864,0,98,0,0.007,0.0,Dự đoán toàn bộ là lớp đa số (0)
+Flow A (Cơ bản),Baseline: Decision Tree (Mặc định),0.5,0.69,0.4767,0.9991,0.74,0.7551,0.7475,0.8773,0.5592,56838,26,24,74,9.279,0.007,Cây quyết định tham số mặc định
+Flow A (Chưa chuẩn hóa),"K-NN (k=5, Unscaled)",0.5,0.0962,0.0729,0.9983,1.0,0.0306,0.0594,0.5953,0.0826,56864,0,95,3,0.018,9.889,Không scale: Time/Amount chi phối khoảng cách
+Flow A (Cơ bản),K-NN (k=5),0.5,0.7746,0.727,0.9995,0.9146,0.7653,0.8333,0.9335,0.8094,56857,7,23,75,0.029,8.612,StandardScaler trên tập Train
+Flow A (Cơ bản),Gaussian Naive Bayes,0.5,0.1095,0.0815,0.9762,0.0583,0.8469,0.1091,0.963,0.0798,55524,1340,15,83,0.071,0.027,Tham số mặc định
+Flow A (Cơ bản),Decision Tree (Tuned),0.5,0.2703,0.5927,0.9917,0.1516,0.8367,0.2567,0.9053,0.5582,56405,459,16,82,3.388,0.005,"depth=6, balanced"
+Flow A (Cơ bản),Random Forest (Mở rộng),0.5,0.8,0.7924,0.9994,0.8837,0.7755,0.8261,0.9694,0.8396,56854,10,22,76,10.781,0.076,Ensemble mở rộng trên Luồng A
+Flow A (Cơ bản),HistGradientBoosting (Mở rộng),0.5,0.5954,0.703,0.9979,0.4503,0.8776,0.5952,0.9691,0.7289,56759,105,12,86,14.395,0.048,Ensemble mở rộng trên Luồng A
+Flow B (Cải tiến),K-NN (Tuned),0.5,0.8814,0.8244,0.9994,0.9429,0.6947,0.8,0.8788,0.7446,56647,4,29,66,0.016,9.079,"k=3, weights=distance"
+Flow B (Cải tiến),K-NN (Tuned) (Threshold=0.55),0.55,0.8914,0.8244,0.9994,0.9412,0.6737,0.7853,0.8788,0.7446,56647,4,31,64,0.016,9.079,"k=3, weights=distance; threshold tuned on validation"
+Flow B (Cân bằng Train),K-NN (Undersample 10:1 Train),0.5,0.5109,0.6238,0.9967,0.303,0.7368,0.4294,0.9281,0.5502,56490,161,25,70,0.001,0.203,Chỉ undersample tập Train (tỉ lệ 10:1); giữ nguyên Val/Test
+Flow B (Cải tiến),Gaussian Naive Bayes,0.5,0.0972,0.0726,0.9721,0.0474,0.8211,0.0897,0.9449,0.0603,55084,1567,17,78,0.074,0.028,"RobustScaler, var_smoothing=1e-9"
+Flow B (Cải tiến),Gaussian Naive Bayes (Threshold=0.95),0.95,0.102,0.0726,0.9734,0.0497,0.8211,0.0938,0.9449,0.0603,55161,1490,17,78,0.074,0.028,"RobustScaler, var_smoothing=1e-9; threshold tuned on validation"
+Flow B (PowerTransformer),GaussianNB (PowerTransformer),0.5,0.13,0.0958,0.9797,0.063,0.8,0.1167,0.9507,0.0758,55520,1131,19,76,0.071,0.033,"Yeo-Johnson, var_smoothing=0.1"
+Flow B (PowerTransformer),GaussianNB (PowerTransformer) (Threshold=0.95),0.95,0.1388,0.0958,0.9814,0.0676,0.7895,0.1246,0.9507,0.0758,55617,1034,20,75,0.071,0.033,"Yeo-Johnson, var_smoothing=0.1; threshold tuned on validation"
+Flow B (Cải tiến),Decision Tree (Tuned),0.5,0.8603,0.7934,0.9993,0.9242,0.6421,0.7578,0.8988,0.6466,56646,5,34,61,5.077,0.006,"entropy, depth=6, cw=None"
+Flow B (Cải tiến),Random Forest (Mở rộng),0.5,0.8619,0.8671,0.9994,0.9315,0.7158,0.8095,0.9424,0.8014,56646,5,27,68,10.39,0.063,Ensemble mở rộng trên Luồng B
+Flow B (Cải tiến),Random Forest (Mở rộng) (Threshold=0.55),0.55,0.8652,0.8671,0.9995,0.9577,0.7158,0.8193,0.9424,0.8014,56648,3,27,68,10.39,0.063,Ensemble mở rộng trên Luồng B; threshold tuned on validation
+Flow B (Cải tiến),HistGradientBoosting (Mở rộng),0.5,0.5878,0.7729,0.9982,0.474,0.7684,0.5863,0.9409,0.6911,56570,81,22,73,14.122,0.039,Ensemble mở rộng trên Luồng B
+Flow B (Cải tiến),HistGradientBoosting (Mở rộng) (Threshold=0.90),0.9,0.8449,0.7729,0.9993,0.85,0.7158,0.7771,0.9409,0.6911,56639,12,27,68,14.122,0.039,Ensemble mở rộng trên Luồng B; threshold tuned on validation
+Flow B (Chia theo Time),K-NN (Tuned),0.5,0.7629,0.6595,0.9995,0.9,0.7297,0.806,0.885,0.7313,56666,6,20,54,0.015,8.983,Kiểm chứng phân tách thời gian 60/20/20
+Flow B (Chia theo Time),Decision Tree (Tuned),0.5,0.6735,0.6046,0.9994,0.8065,0.6757,0.7353,0.8469,0.5905,56660,12,24,50,4.56,0.004,Kiểm chứng phân tách thời gian 60/20/20
+Flow B (Chia theo Time),Random Forest (Mở rộng),0.5,0.7959,0.7669,0.9996,0.9623,0.6892,0.8031,0.9517,0.8056,56670,2,23,51,9.924,0.074,Kiểm chứng phân tách thời gian 60/20/20
+Flow B (Chia theo Time),HistGradientBoosting (Mở rộng),0.5,0.6615,0.7165,0.9991,0.6292,0.7568,0.6871,0.9506,0.7415,56639,33,18,56,12.878,0.046,Kiểm chứng phân tách thời gian 60/20/20
